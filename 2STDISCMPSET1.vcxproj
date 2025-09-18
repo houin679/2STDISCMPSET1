@@ -128,6 +128,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="A1B1_prime_range_immediate.cpp" />
+    <ClCompile Include="A2B1_prime_range_buffered.cpp" />
+    <ClCompile Include="A1B2_prime_divisibility_immediate.cpp" />
+    <ClCompile Include="A2B2_prime_divisibility_buffered.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="config.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
