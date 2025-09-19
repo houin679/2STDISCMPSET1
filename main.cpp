@@ -8,10 +8,10 @@ int main() {
     read_config("config.txt");
 
     cout << "Select mode:\n";
-    cout << "1. Range division – Immediate printing\n";
-    cout << "2. Range division – Buffered printing\n";
-    cout << "3. Divisibility-threading – Immediate printing\n";
-    cout << "4. Divisibility-threading – Buffered printing\n";
+    cout << "1. Range division : Immediate printing\n";
+    cout << "2. Range division : Buffered printing\n";
+    cout << "3. Divisibility-threading : Immediate printing\n";
+    cout << "4. Divisibility-threading : Buffered printing\n";
     cout << "Choice: ";
 
     int choice;
