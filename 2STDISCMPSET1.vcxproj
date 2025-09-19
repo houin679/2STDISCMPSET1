@@ -127,17 +127,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Config.h" />
-    <ClInclude Include="Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="A1B1_prime_range_immediate.cpp" />
     <ClCompile Include="A2B1_prime_range_buffered.cpp" />
     <ClCompile Include="A1B2_prime_divisibility_immediate.cpp" />
     <ClCompile Include="A2B2_prime_divisibility_buffered.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="prime_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="config.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.h" />
+    <ClInclude Include="modes.h" />
+    <ClInclude Include="prime_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

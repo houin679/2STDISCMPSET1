@@ -1,47 +1,18 @@
-// prime_divisibility_buffered.cpp
+#include "modes.h"
+#include "config.h"
+#include "prime_utils.h"
 #include <iostream>
-#include <fstream>
-#include <string>
 #include <thread>
 #include <vector>
 #include <mutex>
-#include <chrono>
-#include <cmath>
-#include <sstream>
-#include <iomanip>
 #include <atomic>
+#include <cmath>
 #include <algorithm>
+#include <sstream>
 
 using namespace std;
-using namespace std::chrono;
 
-int THREADS = 4;
-int MAX_N = 1000;
-mutex results_mutex;
-
-string timestamp_now() {
-    auto now = system_clock::now();
-    time_t t = system_clock::to_time_t(now);
-    tm tm{};
-#ifdef _MSC_VER
-    localtime_s(&tm, &t);
-#else
-    tm = *localtime(&t);
-#endif
-    ostringstream ss;
-    ss << put_time(&tm, "%F %T");
-    return ss.str();
-}
-
-void read_config(const string& fname) {
-    ifstream f(fname);
-    if (!f) return;
-    string line;
-    while (getline(f, line)) {
-        if (line.find("threads=") == 0) THREADS = stoi(line.substr(8));
-        else if (line.find("max=") == 0) MAX_N = stoi(line.substr(4));
-    }
-}
+mutex results_mutex_div;
 
 bool is_prime_div_threaded(int n, int threads_available) {
     if (n <= 1) return false;
@@ -60,7 +31,6 @@ bool is_prime_div_threaded(int n, int threads_available) {
     int idx = 0;
     vector<thread> workers;
 
-    // results aggregator per number: if any worker finds divisor -> composite
     for (int i = 0; i < chunks; ++i) {
         int cnt = per + (i < rem ? 1 : 0);
         int start = idx;
@@ -69,8 +39,7 @@ bool is_prime_div_threaded(int n, int threads_available) {
         workers.emplace_back([&, start, end]() {
             for (int j = start; j <= end; ++j) {
                 if (found_div.load()) break;
-                int d = divisors[j];
-                if (n % d == 0) {
+                if (n % divisors[j] == 0) {
                     found_div.store(true);
                     break;
                 }
@@ -78,28 +47,29 @@ bool is_prime_div_threaded(int n, int threads_available) {
             });
     }
 
-    for (auto& t : workers) if (t.joinable()) t.join();
+    for (auto& t : workers) t.join();
     return !found_div.load();
 }
 
-int main() {
-    read_config("config.txt");
+void run_divisibility_buffered() {
     cout << "Run start: " << timestamp_now() << "\n";
-    vector<pair<int, string>> results; // (n, message)
+    vector<pair<int, string>> results;
+
     for (int n = 2; n <= MAX_N; ++n) {
         bool prime = is_prime_div_threaded(n, THREADS);
         ostringstream ss;
         ss << "[" << timestamp_now() << "] ";
         if (prime) ss << "Prime: " << n;
         else ss << "Composite: " << n;
-        lock_guard<mutex> lg(results_mutex);
+
+        lock_guard<mutex> lg(results_mutex_div);
         results.emplace_back(n, ss.str());
     }
 
-    // sort and print after all computations
-    sort(results.begin(), results.end(), [](auto& a, auto& b) { return a.first < b.first; });
-    cout << "\n--- Buffered output (after all computations) ---\n";
+    sort(results.begin(), results.end(),
+        [](auto& a, auto& b) { return a.first < b.first; });
+
+    cout << "\n--- Buffered output ---\n";
     for (auto& p : results) cout << p.second << "\n";
     cout << "\nRun end: " << timestamp_now() << "\n";
-    return 0;
 }
