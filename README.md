@@ -14,8 +14,11 @@ It compares two strategies (range splitting vs. divisibility checking) and two o
     Enter the number (1–4) corresponding to the mode you want to run.
 
       1 → Range division, immediate output
+   
       2 → Range division, buffered output
+   
       3 → Divisibility-threading, immediate output
+   
       4 → Divisibility-threading, buffered output
 
 
