@@ -8,9 +8,16 @@ It compares two strategies (range splitting vs. divisibility checking) and two o
 ## Build & Run (Visual Studio 2022)
 
 1. Open the provided `.sln` file in **Visual Studio 2022**.  
-2. Press **Run** (▶️) to build and execute the program.  
+2. Press **Run** (▶️) to build and execute the program.
+3. Once running, the program will display a menu
 
-That’s it — no manual compilation needed.
+    Enter the number (1–4) corresponding to the mode you want to run.
+
+      1 → Range division, immediate output
+      2 → Range division, buffered output
+      3 → Divisibility-threading, immediate output
+      4 → Divisibility-threading, buffered output
+
 
 ---
 
