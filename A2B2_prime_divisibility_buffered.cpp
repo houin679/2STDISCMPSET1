@@ -78,6 +78,7 @@ void run_divisibility_buffered() {
 */
 
 
+
 #include "modes.h"
 #include "config.h"
 #include "prime_utils.h"
@@ -131,25 +132,29 @@ bool is_prime_div_threaded(int n, int threads_available) {
     return !found_div.load();
 }
 
-void run_divisibility_buffered() {
-    cout << "Run start: " << timestamp_now() << "\n";
-    vector<pair<int, string>> results;
+void run_divisibility_buffered() {  
+   cout << "Run start: " << timestamp_now() << "\n";  
+   vector<pair<int, string>> results;  
 
-    for (int n = 2; n <= MAX_N; ++n) {
-        bool prime = is_prime_div_threaded(n, THREADS);
-        if (prime) {
-            ostringstream ss;
-            ss << "[" << timestamp_now() << "] Prime: " << n;
-            lock_guard<mutex> lg(results_mutex_div);
-            results.emplace_back(n, ss.str());
-        }
-        // composites are silently skipped
-    }
+   for (int n = 2; n <= MAX_N; ++n) {  
+       bool prime = is_prime_div_threaded(n, THREADS);  
+       if (prime) {  
+           ostringstream ss;  
+           ss << "[" << timestamp_now() << "] Prime: " << n;  
+           {  
+               lock_guard<mutex> lg(results_mutex_div);  
+               results.emplace_back(n, ss.str());  
+           } // Ensure the lock is released immediately after modifying the results vector  
+       }  
+       // composites are silently skipped  
+   }  
 
-    sort(results.begin(), results.end(),
-        [](auto& a, auto& b) { return a.first < b.first; });
+   sort(results.begin(), results.end(),  
+       [](auto& a, auto& b) { return a.first < b.first; });  
 
-    cout << "\n--- Buffered output ---\n";
-    for (auto& p : results) cout << p.second << "\n";
-    cout << "\nRun end: " << timestamp_now() << "\n";
+   cout << "\n--- Buffered output ---\n";  
+   for (auto& p : results) cout << p.second << "\n";  
+   cout << "\nRun end: " << timestamp_now() << "\n";  
 }
+
+
